@@ -194,7 +194,7 @@ void FuzzOneInput(const hpack_sync_fuzzer::Msg& msg) {
     hpack_encoder_detail::Encoder encoder_2(
         &compressor, msg.use_true_binary_metadata(), encode_output_2);
     encoder_2.EmitIndexed(62);
-    CHECK_EQ(encode_output_2.Count(), 1);
+    ABSL_CHECK_EQ(encode_output_2.Count(), 1);
     grpc_metadata_batch read_metadata_2;
     parser.BeginFrame(
         &read_metadata_2, 1024, 1024, HPackParser::Boundary::EndOfHeaders,
@@ -228,7 +228,7 @@ FUZZ_TEST(HpackSyncFuzzer, FuzzOneInput);
 
 auto ParseTestProto(const std::string& proto) {
   hpack_sync_fuzzer::Msg msg;
-  CHECK(google::protobuf::TextFormat::ParseFromString(proto, &msg));
+  ABSL_CHECK(google::protobuf::TextFormat::ParseFromString(proto, &msg));
   return msg;
 }
 

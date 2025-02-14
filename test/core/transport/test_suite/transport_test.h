@@ -78,7 +78,7 @@ class TransportTest : public YodelTest {
   };
 
   void InitTest() override {
-    CHECK(g_create_transport_test_fixture != nullptr);
+    ABSL_CHECK(g_create_transport_test_fixture != nullptr);
     transport_pair_ = (*g_create_transport_test_fixture)(event_engine());
     if (transport_pair_.is_slow) {
       SetMaxRandomMessageSize(1024);
@@ -105,7 +105,7 @@ class TransportTest : public YodelTest {
       std::shared_ptr<grpc_event_engine::experimental::FuzzingEventEngine>     \
           event_engine);                                                       \
   int g_##name = [] {                                                          \
-    CHECK(g_create_transport_test_fixture == nullptr);                         \
+    ABSL_CHECK(g_create_transport_test_fixture == nullptr);                         \
     g_create_transport_test_fixture = name;                                    \
     return 0;                                                                  \
   }();                                                                         \

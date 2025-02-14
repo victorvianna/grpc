@@ -41,7 +41,7 @@
 #include <vector>
 
 #include "absl/functional/any_invocable.h"
-#include "absl/log/check.h"
+#include "absl/log/absl_check.h"
 #include "absl/memory/memory.h"
 #include "absl/meta/type_traits.h"
 #include "absl/strings/str_cat.h"
@@ -451,7 +451,7 @@ class CoreEnd2endTest {
     if (client_ != nullptr) ShutdownAndDestroyClient();
     auto& f = fixture();
     client_ = f.MakeClient(args, cq_);
-    CHECK_NE(client_, nullptr);
+    ABSL_CHECK_NE(client_, nullptr);
   }
   // Initialize the server.
   // If called, then InitClient must be called to create a client (otherwise one
@@ -461,7 +461,7 @@ class CoreEnd2endTest {
     if (server_ != nullptr) ShutdownAndDestroyServer();
     auto& f = fixture();
     server_ = f.MakeServer(args, cq_, pre_server_start_);
-    CHECK_NE(server_, nullptr);
+    ABSL_CHECK_NE(server_, nullptr);
   }
   // Remove the client.
   void ShutdownAndDestroyClient() {
@@ -539,7 +539,7 @@ class CoreEnd2endTest {
   }
 
   void SetPostGrpcInitFunc(absl::AnyInvocable<void()> fn) {
-    CHECK(fixture_ == nullptr);
+    ABSL_CHECK(fixture_ == nullptr);
     post_grpc_init_func_ = std::move(fn);
   }
 

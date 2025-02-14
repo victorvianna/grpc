@@ -17,7 +17,7 @@
 #include <memory>
 
 #include "absl/functional/any_invocable.h"
-#include "absl/log/log.h"
+#include "absl/log/absl_log.h"
 #include "gtest/gtest.h"
 #include "src/core/lib/promise/promise.h"
 #include "test/core/promise/poll_matcher.h"
@@ -52,7 +52,7 @@ TEST(CheckDelayedTest, SeesDelayed) {
 
 TEST(MapError, DoesntMapOk) {
   auto fail_on_call = [](const absl::Status&) {
-    LOG(FATAL) << "should never be called";
+    ABSL_LOG(FATAL) << "should never be called";
     return absl::InternalError("unreachable");
   };
   promise_detail::MapError<decltype(fail_on_call)> map_on_error(

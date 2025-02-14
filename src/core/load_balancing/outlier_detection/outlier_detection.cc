@@ -35,8 +35,8 @@
 #include <vector>
 
 #include "absl/base/thread_annotations.h"
-#include "absl/log/check.h"
-#include "absl/log/log.h"
+#include "absl/log/absl_check.h"
+#include "absl/log/absl_log.h"
 #include "absl/meta/type_traits.h"
 #include "absl/random/random.h"
 #include "absl/status/status.h"
@@ -328,7 +328,7 @@ class OutlierDetectionLb final : public LoadBalancingPolicy {
           --multiplier_;
         }
       } else {
-        CHECK(ejection_time_.has_value());
+        ABSL_CHECK(ejection_time_.has_value());
         auto change_time = ejection_time_.value() +
                            Duration::Milliseconds(std::min(
                                base_ejection_time_in_millis * multiplier_,
@@ -665,7 +665,7 @@ absl::Status OutlierDetectionLb::UpdateLocked(UpdateArgs args) {
             if (GRPC_TRACE_FLAG_ENABLED(outlier_detection_lb)) {
               std::string address_str = grpc_sockaddr_to_string(&address, false)
                                             .value_or("<unknown>");
-              LOG(INFO) << "[outlier_detection_lb " << this
+              ABSL_LOG(INFO) << "[outlier_detection_lb " << this
                         << "] adding address entry for " << address_str;
             }
             it2 = subchannel_state_map_
@@ -693,7 +693,7 @@ absl::Status OutlierDetectionLb::UpdateLocked(UpdateArgs args) {
         if (GRPC_TRACE_FLAG_ENABLED(outlier_detection_lb)) {
           std::string address_str =
               grpc_sockaddr_to_string(&address, false).value_or("<unknown>");
-          LOG(INFO) << "[outlier_detection_lb " << this
+          ABSL_LOG(INFO) << "[outlier_detection_lb " << this
                     << "] removing subchannel map entry " << address_str;
         }
         // Don't hold a ref to the corresponding EndpointState object,
@@ -788,7 +788,7 @@ RefCountedPtr<SubchannelInterface> OutlierDetectionLb::Helper::CreateSubchannel(
   if (GRPC_TRACE_FLAG_ENABLED(outlier_detection_lb)) {
     std::string address_str =
         grpc_sockaddr_to_string(&address, false).value_or("<unknown>");
-    LOG(INFO) << "[outlier_detection_lb " << parent()
+    ABSL_LOG(INFO) << "[outlier_detection_lb " << parent()
               << "] creating subchannel for " << address_str
               << ", subchannel state " << subchannel_state.get();
   }
@@ -1001,7 +1001,7 @@ void OutlierDetectionLb::EjectionTimer::OnTimerLocked() {
     const bool unejected = endpoint_state->MaybeUneject(
         config.base_ejection_time.millis(), config.max_ejection_time.millis());
     if (unejected && GRPC_TRACE_FLAG_ENABLED(outlier_detection_lb)) {
-      LOG(INFO) << "[outlier_detection_lb " << parent_.get()
+      ABSL_LOG(INFO) << "[outlier_detection_lb " << parent_.get()
                 << "] unejected endpoint " << address_set.ToString() << " ("
                 << endpoint_state.get() << ")";
     }

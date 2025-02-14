@@ -36,7 +36,7 @@ auto AnyChannelArgs() {
 // Without supplying channel args, we should expect basic TCP connections to
 // succeed every time.
 void BasicHandshakeSucceeds(const fuzzing_event_engine::Actions& actions) {
-  CHECK_OK(TestHandshake(BaseChannelArgs(), BaseChannelArgs(), actions));
+  ABSL_CHECK_OK(TestHandshake(BaseChannelArgs(), BaseChannelArgs(), actions));
 }
 FUZZ_TEST(HandshakerFuzzer, BasicHandshakeSucceeds);
 

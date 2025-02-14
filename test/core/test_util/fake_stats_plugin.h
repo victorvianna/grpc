@@ -23,7 +23,7 @@
 
 #include "absl/container/flat_hash_map.h"
 #include "absl/functional/any_invocable.h"
-#include "absl/log/log.h"
+#include "absl/log/absl_log.h"
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 #include "absl/types/span.h"
@@ -297,7 +297,7 @@ class FakeStatsPlugin : public StatsPlugin {
     // just ignore it here. This would also prevent us from having to lock the
     // GlobalInstrumentsRegistry everytime a metric is recorded. But this is not
     // a concern for now.
-    VLOG(2) << "FakeStatsPlugin[" << this
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this
             << "]::AddCounter(index=" << handle.index << ", value=(uint64)"
             << value << ", label_values={" << absl::StrJoin(label_values, ", ")
             << "}, optional_label_values={"
@@ -311,7 +311,7 @@ class FakeStatsPlugin : public StatsPlugin {
       GlobalInstrumentsRegistry::GlobalInstrumentHandle handle, double value,
       absl::Span<const absl::string_view> label_values,
       absl::Span<const absl::string_view> optional_values) override {
-    VLOG(2) << "FakeStatsPlugin[" << this
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this
             << "]::AddCounter(index=" << handle.index
             << ", value(double)=" << value << ", label_values={"
             << absl::StrJoin(label_values, ", ") << "}, optional_label_values={"
@@ -325,7 +325,7 @@ class FakeStatsPlugin : public StatsPlugin {
       GlobalInstrumentsRegistry::GlobalInstrumentHandle handle, uint64_t value,
       absl::Span<const absl::string_view> label_values,
       absl::Span<const absl::string_view> optional_values) override {
-    VLOG(2) << "FakeStatsPlugin[" << this
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this
             << "]::RecordHistogram(index=" << handle.index << ", value=(uint64)"
             << value << ", label_values={" << absl::StrJoin(label_values, ", ")
             << "}, optional_label_values={"
@@ -339,7 +339,7 @@ class FakeStatsPlugin : public StatsPlugin {
       GlobalInstrumentsRegistry::GlobalInstrumentHandle handle, double value,
       absl::Span<const absl::string_view> label_values,
       absl::Span<const absl::string_view> optional_values) override {
-    VLOG(2) << "FakeStatsPlugin[" << this
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this
             << "]::RecordHistogram(index=" << handle.index << ", value=(double)"
             << value << ", label_values={" << absl::StrJoin(label_values, ", ")
             << "}, optional_label_values={"
@@ -350,13 +350,13 @@ class FakeStatsPlugin : public StatsPlugin {
     iter->second.Record(value, label_values, optional_values);
   }
   void AddCallback(RegisteredMetricCallback* callback) override {
-    VLOG(2) << "FakeStatsPlugin[" << this << "]::AddCallback(" << callback
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this << "]::AddCallback(" << callback
             << ")";
     MutexLock lock(&callback_mu_);
     callbacks_.insert(callback);
   }
   void RemoveCallback(RegisteredMetricCallback* callback) override {
-    VLOG(2) << "FakeStatsPlugin[" << this << "]::RemoveCallback(" << callback
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this << "]::RemoveCallback(" << callback
             << ")";
     MutexLock lock(&callback_mu_);
     callbacks_.erase(callback);
@@ -423,13 +423,13 @@ class FakeStatsPlugin : public StatsPlugin {
     return iter->second.GetValues(label_values, optional_values);
   }
   void TriggerCallbacks() {
-    VLOG(2) << "FakeStatsPlugin[" << this << "]::TriggerCallbacks(): START";
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this << "]::TriggerCallbacks(): START";
     Reporter reporter(*this);
     MutexLock lock(&callback_mu_);
     for (auto* callback : callbacks_) {
       callback->Run(reporter);
     }
-    VLOG(2) << "FakeStatsPlugin[" << this << "]::TriggerCallbacks(): END";
+    ABSL_VLOG(2) << "FakeStatsPlugin[" << this << "]::TriggerCallbacks(): END";
   }
   std::optional<int64_t> GetInt64CallbackGaugeValue(
       GlobalInstrumentsRegistry::GlobalInstrumentHandle handle,
@@ -464,7 +464,7 @@ class FakeStatsPlugin : public StatsPlugin {
         absl::Span<const absl::string_view> label_values,
         absl::Span<const absl::string_view> optional_values) override
         ABSL_EXCLUSIVE_LOCKS_REQUIRED(plugin_.callback_mu_) {
-      VLOG(2) << "FakeStatsPlugin[" << this
+      ABSL_VLOG(2) << "FakeStatsPlugin[" << this
               << "]::Reporter::Report(index=" << handle.index
               << ", value=(int64_t)" << value << ", label_values={"
               << absl::StrJoin(label_values, ", ")
@@ -480,7 +480,7 @@ class FakeStatsPlugin : public StatsPlugin {
         absl::Span<const absl::string_view> label_values,
         absl::Span<const absl::string_view> optional_values) override
         ABSL_EXCLUSIVE_LOCKS_REQUIRED(plugin_.callback_mu_) {
-      VLOG(2) << "FakeStatsPlugin[" << this
+      ABSL_VLOG(2) << "FakeStatsPlugin[" << this
               << "]::Reporter::Report(index=" << handle.index
               << ", value=(double)" << value << ", label_values={"
               << absl::StrJoin(label_values, ", ")

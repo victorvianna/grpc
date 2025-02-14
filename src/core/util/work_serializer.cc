@@ -29,8 +29,8 @@
 #include <utility>
 
 #include "absl/container/inlined_vector.h"
-#include "absl/log/check.h"
-#include "absl/log/log.h"
+#include "absl/log/absl_check.h"
+#include "absl/log/absl_log.h"
 #include "src/core/lib/debug/trace.h"
 #include "src/core/lib/experiments/experiments.h"
 #include "src/core/lib/iomgr/exec_ctx.h"
@@ -175,7 +175,7 @@ void WorkSerializer::WorkSerializerImpl::Run(
     running_start_time_ = std::chrono::steady_clock::now();
     items_processed_during_run_ = 0;
     time_running_items_ = std::chrono::steady_clock::duration();
-    CHECK(processing_.empty());
+    ABSL_CHECK(processing_.empty());
     processing_.emplace_back(std::move(callback), location);
     event_engine_->Run(this);
   } else {

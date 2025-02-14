@@ -25,7 +25,7 @@
 #include <utility>
 
 #include "absl/cleanup/cleanup.h"
-#include "absl/log/check.h"
+#include "absl/log/absl_check.h"
 #include "absl/random/bit_gen_ref.h"
 #include "fuzztest/fuzztest.h"
 #include "gtest/gtest.h"
@@ -121,7 +121,7 @@ void HpackParserFuzzer(const hpack_parser_fuzzer::Msg& msg) {
         // (This is incredibly generous, but having a bound nevertheless means
         // we don't accidentally flow to infinity, which would be crossing the
         // streams level bad).
-        CHECK(static_cast<int>(parser->buffered_bytes() / 4) <
+        ABSL_CHECK(static_cast<int>(parser->buffered_bytes() / 4) <
               std::max(1024, absolute_max_length));
         if (!err.ok()) {
           intptr_t unused;

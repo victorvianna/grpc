@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-#include "absl/log/check.h"
+#include "absl/log/absl_check.h"
 #include "absl/status/statusor.h"
 #include "fuzztest/fuzztest.h"
 #include "src/core/lib/event_engine/tcp_socket_utils.h"
@@ -36,7 +36,7 @@ void CheckUriIsParseable(std::vector<uint8_t> buffer) {
   if (!uri.ok()) return;
   absl::StatusOr<grpc_core::URI> parsed_uri =
       grpc_core::URI::Parse(uri.value());
-  CHECK_OK(parsed_uri);
+  ABSL_CHECK_OK(parsed_uri);
 }
 
 FUZZ_TEST(ResolvedAddress, CheckUriIsParseable)

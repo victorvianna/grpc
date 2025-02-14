@@ -65,7 +65,7 @@ class ClientCallTest : public YodelTest {
   };
 
   grpc_call* InitCall(const CallOptions& options) {
-    CHECK_EQ(call_, nullptr);
+    ABSL_CHECK_EQ(call_, nullptr);
     auto arena = SimpleArenaAllocator()->MakeArena();
     arena->SetContext<grpc_event_engine::experimental::EventEngine>(
         event_engine().get());
@@ -102,7 +102,7 @@ class ClientCallTest : public YodelTest {
   }
 
   CallHandler& handler() {
-    CHECK(handler_.has_value());
+    ABSL_CHECK(handler_.has_value());
     return *handler_;
   }
 
@@ -113,7 +113,7 @@ class ClientCallTest : public YodelTest {
 
     void Orphaned() override {}
     void StartCall(UnstartedCallHandler handler) override {
-      CHECK(!test_->handler_.has_value());
+      ABSL_CHECK(!test_->handler_.has_value());
       test_->handler_.emplace(handler.StartCall());
     }
 
@@ -139,7 +139,7 @@ class ClientCallTest : public YodelTest {
     grpc_completion_queue_shutdown(cq_);
     auto ev = grpc_completion_queue_next(
         cq_, gpr_inf_future(GPR_CLOCK_REALTIME), nullptr);
-    CHECK_EQ(ev.type, GRPC_QUEUE_SHUTDOWN);
+    ABSL_CHECK_EQ(ev.type, GRPC_QUEUE_SHUTDOWN);
     grpc_completion_queue_destroy(cq_);
   }
 
@@ -167,8 +167,8 @@ CLIENT_CALL_TEST(SendInitialMetadata) {
       handler(), "pull-initial-metadata",
       [this]() { return handler().PullClientInitialMetadata(); },
       [](ValueOrFailure<ClientMetadataHandle> md) {
-        CHECK(md.ok());
-        CHECK_NE((*md)->get_pointer(HttpPathMetadata()), nullptr);
+        ABSL_CHECK(md.ok());
+        ABSL_CHECK_NE((*md)->get_pointer(HttpPathMetadata()), nullptr);
         EXPECT_EQ((*md)->get_pointer(HttpPathMetadata())->as_string_view(),
                   kDefaultPath);
         std::string buffer;
@@ -187,7 +187,7 @@ CLIENT_CALL_TEST(SendInitialMetadataAndReceiveStatusAfterCancellation) {
       handler(), "pull-initial-metadata",
       [this]() { return handler().PullClientInitialMetadata(); },
       [this](ValueOrFailure<ClientMetadataHandle> md) {
-        CHECK(md.ok());
+        ABSL_CHECK(md.ok());
         EXPECT_EQ((*md)->get_pointer(HttpPathMetadata())->as_string_view(),
                   kDefaultPath);
         handler().PushServerTrailingMetadata(

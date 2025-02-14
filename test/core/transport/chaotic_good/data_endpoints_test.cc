@@ -94,7 +94,7 @@ DATA_ENDPOINTS_TEST(CanMultiWrite) {
   std::string expect[2];
   expect[write1_ep] += "hello";
   expect[write2_ep] += "world";
-  LOG(INFO) << GRPC_DUMP_ARGS(write1_ep, write2_ep);
+  ABSL_LOG(INFO) << GRPC_DUMP_ARGS(write1_ep, write2_ep);
   EXPECT_EQ(writes1.JoinIntoString(), expect[0]);
   EXPECT_EQ(writes2.JoinIntoString(), expect[1]);
 }
@@ -117,7 +117,7 @@ DATA_ENDPOINTS_TEST(CanRead) {
 namespace {
 yodel::Msg ParseTestProto(const std::string& text) {
   yodel::Msg msg;
-  CHECK(google::protobuf::TextFormat::ParseFromString(text, &msg));
+  ABSL_CHECK(google::protobuf::TextFormat::ParseFromString(text, &msg));
   return msg;
 }
 }  // namespace
