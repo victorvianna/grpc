@@ -19,7 +19,6 @@
 
 #include <optional>
 
-#include "absl/flags/marshalling.h"
 #include "absl/log/check.h"
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_join.h"
@@ -53,24 +52,14 @@ int32_t LoadConfigFromEnv(absl::string_view environment_variable,
 
 bool LoadConfigFromEnv(absl::string_view environment_variable,
                        bool default_value) {
-  auto env = LoadEnv(environment_variable);
-  if (env.has_value()) {
-    bool out;
-    std::string error;
-    if (absl::ParseFlag(env->c_str(), &out, &error)) return out;
-    fprintf(stderr, "Error reading bool from %s: '%s' is not a bool: %s",
-            std::string(environment_variable).c_str(), env->c_str(),
-            error.c_str());
-  }
   return default_value;
 }
 
-std::string LoadConfig(const absl::Flag<std::vector<std::string>>& flag,
+std::string LoadConfig(const std::vector<std::string>& from_flag,
                        absl::string_view environment_variable,
-                       const absl::optional<std::string>& override,
+                       const std::optional<std::string>& override,
                        const char* default_value) {
   if (override.has_value()) return *override;
-  auto from_flag = absl::GetFlag(flag);
   if (!from_flag.empty()) return absl::StrJoin(from_flag, ",");
   return LoadConfigFromEnv(environment_variable, default_value);
 }
