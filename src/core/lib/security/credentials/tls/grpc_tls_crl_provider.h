@@ -36,9 +36,13 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
-#include "src/core/util/directory_reader.h"
 #include "src/core/util/sync.h"
 #include "src/core/util/time.h"
+
+#if !defined(__Fuchsia__)
+#include "src/core/util/directory_reader.h"
+#endif  // !defined(__Fuchsia__)
+
 
 namespace grpc_core {
 namespace experimental {
@@ -88,6 +92,7 @@ class CertificateInfoImpl : public CertificateInfo {
   const std::string authority_key_identifier_;
 };
 
+#if !defined(__Fuchsia__)
 // Defining this here lets us hide implementation details (and includes) from
 // the header in include
 class DirectoryReloaderCrlProvider
@@ -122,6 +127,7 @@ class DirectoryReloaderCrlProvider
   std::optional<grpc_event_engine::experimental::EventEngine::TaskHandle>
       refresh_handle_;
 };
+#endif  // !defined(__Fuchsia__)
 
 }  // namespace experimental
 }  // namespace grpc_core
